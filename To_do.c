@@ -49,7 +49,7 @@ void Afficher_sort_trier_alpha(int num){
 void Afficher_sort_trier_deadline(int num){
                 for(int i = 0; i < num - 1; i++){
                         for(int j=0; j < num - i - 1; j++){
-                                if(tach[j].a > tach[j + 1].a || tach[j].a == tach[j+1].a && tach[j].m > tach[j + 1].m ||  tach[j].m == tach[j+1].m && tach[j].j > tach[j + 1].j ||  tach[j].j == tach[j+1].j )
+                                if(tach[j].a > tach[j + 1].a && tach[j].a == tach[j+1].a|| tach[j].m > tach[j + 1].m &&  tach[j].m == tach[j+1].m || tach[j].j > tach[j + 1].j &&  tach[j].j == tach[j+1].j )
                                         Echanger_tache(j, j + 1);
                         }
                 }
@@ -168,8 +168,12 @@ void Menu_affichage(){
         }
 }
 
-void Menu_Modifier(){
-        int chx;
+void modification(int num){
+        int chx,id;
+                printf("Enter ID: ");
+                scanf("%d",&id);
+        for (int i = 0; i < num;i++){
+        if (id == tach[i].id){
         char choisire[10];
         printf("1:Modifier la description d'une tâche.\n");
         printf("2:Modifier le statut d'une tâche.\n");
@@ -181,17 +185,46 @@ void Menu_Modifier(){
         chx = atoi(choisire);
         switch (chx){
                 case 1:
-                        
+                        printf("entrez nouveau description: \n");
+                        scanf(" %[^\n]", tach[i].des);
+                        printf("La description a ete modifier avec succee.");
                         break;
                 case 2:
-                        
+                        char choisire [10];
+                        int NT;
+                        printf("Modifier statut.\n");
+                        printf("1: à realiser.\n");
+                        printf("2: en cours de réalisation.\n");
+                        printf("3: finalisée.\n");
+                        hna:
+                        printf("Choisir nouveau statut: ");
+                        scanf(" %[^\n]", choisire);
+                        NT = atoi(choisire);
+                        switch(NT){
+                                case 1:
+                                        strcpy(tach[i].statut, "a realiser");
+                                        break;
+                                case 2:
+                                        strcpy(tach[i].statut, "en cours de réalisation.");
+                                        break;
+                                case 3:
+                                        strcpy(tach[i].statut, "finalisée.");
+                                        break;
+                                default: 
+                                        printf("invalide \n");
+                                        goto hna;
+                                        
+                        }
                         break;
                 case 3:
-                        
+                        printf("Nouvelle date de deadline (DD/MM/YY) : ");
+                        scanf("%d/%d/%d", &tach[i].j, &tach[i].m, &tach[i].a);
                         break;
                 default:
                         printf("choix invalide. essayer à nouveau .\n");
                         goto ici;
+        }
+        }
         }
 }
 void Menu_Rechercher(){
@@ -218,7 +251,7 @@ void Menu_Rechercher(){
                         printf("Entrez titre de tache: ");
                         scanf(" %[^\n]",titre);
                         indice = Recherche_Titre(cup,titre);
-                      if(indice != -1){
+                        if(indice != -1){
                                 printf("\nIdentifiant: %d\nTitre: %s\nDescription: %s\nDeadline: %d/%d/%d\nStatut: %s\n", tach[indice].id,tach[indice].titre, tach[indice].des, tach[indice].j, tach[indice].m, tach[indice].a, tach[indice].statut);
                         }
                         else{
@@ -265,6 +298,9 @@ int main(){
                 case 3:
                         Menu_affichage();
                         Afficher_tache(cup);
+                        break;
+                case 4:
+                        modification(cup);
                         break;
                 case 5:
                         printf("Entrez ID pour supprimer la tache: ");
