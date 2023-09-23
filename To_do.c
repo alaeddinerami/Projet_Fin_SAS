@@ -49,7 +49,7 @@ void Afficher_sort_trier_alpha(int num){
 void Afficher_sort_trier_deadline(int num){
                 for(int i = 0; i < num - 1; i++){
                         for(int j=0; j < num - i - 1; j++){
-                                if(tach[j].a > tach[j + 1].a && tach[j].a == tach[j+1].a|| tach[j].m > tach[j + 1].m &&  tach[j].m == tach[j+1].m || tach[j].j > tach[j + 1].j &&  tach[j].j == tach[j+1].j )
+                                if(tach[j].a > tach[j + 1].a && tach[j].a == tach[j+1].a || tach[j].m > tach[j + 1].m &&  tach[j].m == tach[j+1].m || tach[j].j > tach[j + 1].j &&  tach[j].j == tach[j+1].j )
                                         Echanger_tache(j, j + 1);
                         }
                 }
@@ -67,7 +67,7 @@ void Afficher_sort_trier_3jours(int num){
 }
 void Afficher_tache(int num){
                 for (int i=0; i < num; i++){
-                        printf("\nIdentifiant: %d\nTitre: %s\nDescription: %s\nDeadline: %d/%d/%d\nStatut: %s\n", tach[i].id,tach[i].titre, tach[i].des, tach[i].j, tach[i].m, tach[i].a, tach[i].statut);
+                        printf("\tIdentifiant: %d\n\tTitre: %s\n\tDescription: %s\n\tDeadline: %d/%d/%d\n\tStatut: %s\n", tach[i].id,tach[i].titre, tach[i].des, tach[i].j, tach[i].m, tach[i].a, tach[i].statut);
                 }
 }
 int Recherche_ID(int num, int id){
@@ -89,53 +89,48 @@ int Recherche_Titre(int num, char titre[100]){
 }
 void Ajouter_tache(int num){
         int st;
-            char choisire[10];
+        char choisire[10];
         for(int i = cup; i < cup + num; i++){
                 tach[i].id = i + 1;
-                printf("Entez Titre: ");
+                printf("\nEntez Titre: ");
                 scanf(" %[^\n]", tach[i].titre);
 
-                printf("Entez Description: ");
+                printf("\nEntez Description: ");
                 scanf(" %[^\n]", tach[i].des);
 
                 do{
 
-                   printf("Entrez Deadline (DD/MM/YY): ");
-                   scanf("%d/%d/%d", &tach[i].j, &tach[i].m, &tach[i].a);
-
-                        if(tach[i].j < 1 || tach[i].j > 31 || tach[i].m < 1 || tach[i].m < 12 || tach[i].a < 2023){
-
+                printf("\nEntrez Deadline (DD/MM/YY): ");
+                scanf("%d/%d/%d", &tach[i].j, &tach[i].m, &tach[i].a);
+                        if(tach[i].j > 30 || tach[i].j == 0 || tach[i].m > 12 || tach[i].m == 00 || tach[i].a < 2023){
                                 printf("La date incorrec \n");
-
-
                         }
                         else if(isPastDate(tach[i].j, tach[i].m, tach[i].a)){
-
                                 printf("La date est dans le passe. Veuillez entrer une date future.\n");}
 
-                } while((tach[i].j < 1 || tach[i].j > 31 && tach[i].m < 1 || tach[i].m < 12, tach[i].a < 2023) ||  isPastDate(tach[i].j, tach[i].m, tach[i].a));
+                        else(printf("\n\tLa tache Veuillez entrer avec succès\n"));
+                
+                } while((tach[i].j > 30 || tach[i].j == 0 || tach[i].m > 12 || tach[i].m == 00 || tach[i].a < 2023) || isPastDate(tach[i].j, tach[i].m, tach[i].a));
 
-                do{
-                        printf("Enter statut :\n  1: a realiser.\n  2: en cours de realisation.\n  3: finalisee.  \nEntrez nombre: ");
-                        printf("Entre N: ");
-                        scanf(" %[^\n]", choisire);
-                        st = atoi(choisire);
-                 }while (st < 1 || st > 3);
-
-
-                            switch(st){
-                                case 1:
-                                        strcpy(tach[i].statut,"a realiser");
-                                        break;
-                                case 2:
-                                        strcpy(tach[i].statut,"en cours de realisation,");
-                                        break;
-                                case 3:
-                                        strcpy(tach[i].statut,"finalisée");
-                                        break;
-
-                                default:
-                                        printf("Le Nombre incorrect.\n");
+                
+                ici:
+                printf("\nChoisi entre:\n  1: a realiser.\n  2: en cours de realisation.\n  3: finalisee. \n ");
+                printf("\nEntre N: ");
+                scanf(" %[^\n]", choisire);
+                st = atoi(choisire);             
+                switch(st){
+                        case 1:
+                                strcpy(tach[i].statut,"a realiser.");
+                                break;
+                        case 2:
+                                strcpy(tach[i].statut,"en cours de realisation.");
+                                break;
+                        case 3:
+                                strcpy(tach[i].statut,"finalisée.");
+                                break;
+                        default:
+                                printf("\n\tChoix invalide. Veuillez choisir parmi (1.2.3)\n");
+                                goto ici;
                         }
                 }
         cup += num;
@@ -144,9 +139,9 @@ void Ajouter_tache(int num){
 void Menu_affichage(){
         int chx;
         char choisire[10];
-        printf("1:Trier les tâches par ordre alphabétique.\n");
+        printf("\n1:Trier les tâches par ordre alphabétique.\n");
         printf("2:Trier les tâches par deadline.\n");
-        printf("3:Afficher les tâches dont le deadline est dans 3 jours ou moins.");
+        printf("3:Afficher les tâches dont le deadline est dans 3 jours ou moins.\n");
         ici:
         printf("\nchoisir: ");
         scanf(" %[^\n]", choisire);
