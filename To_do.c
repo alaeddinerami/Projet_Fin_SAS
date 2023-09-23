@@ -8,10 +8,10 @@ typedef struct{
         char titre[20],des[100],statut[25];
 
 }To_do;
-
+int x=1;
 To_do tach[100];
 int cup = 0; //bach ikamal min bd
-
+ //variable delet
 int isPastDate(int day, int month, int year) {
     time_t now;
     struct tm future_date;
@@ -49,7 +49,9 @@ void Afficher_sort_trier_alpha(int num){
 void Afficher_sort_trier_deadline(int num){
                 for(int i = 0; i < num - 1; i++){
                         for(int j=0; j < num - i - 1; j++){
-                                if(tach[j].a > tach[j + 1].a && tach[j].a == tach[j+1].a || tach[j].m > tach[j + 1].m &&  tach[j].m == tach[j+1].m || tach[j].j > tach[j + 1].j &&  tach[j].j == tach[j+1].j )
+                                if(tach[j].a > tach[j + 1].a ||
+                                   (tach[j].a == tach[j + 1].a && tach[j].m > tach[j + 1].m) ||
+                                   (tach[j].a == tach[j + 1].a && tach[j].m == tach[j + 1].m && tach[j].j > tach[j + 1].j))         
                                         Echanger_tache(j, j + 1);
                         }
                 }
@@ -91,7 +93,7 @@ void Ajouter_tache(int num){
         int st;
         char choisire[10];
         for(int i = cup; i < cup + num; i++){
-                tach[i].id = i + 1;
+                tach[i].id =x++;
                 printf("\nEntez Titre: ");
                 scanf(" %[^\n]", tach[i].titre);
 
@@ -162,7 +164,45 @@ void Menu_affichage(){
                         goto ici;
         }
 }
+void Menu_Statistiques(){
+        int chx;
+        char choisire[10];
+        printf("\n1:Afficher le nombre total des tâches.\n");
+        printf("2:Afficher le nombre de tâches complètes et incomplètes.\n");
+        printf("3:Afficher le nombre de jours restants jusqu'au délai de chaque tâche.\n");
+        ici:
+        printf("\nchoisir: ");
+        scanf(" %[^\n]", choisire);
 
+        chx = atoi(choisire);
+        switch (chx){
+                case 1:
+                        printf("Le nombre total de tâches est : %d\n", cup);
+                        break;
+                case 2:
+                        int completeCount = 0;
+                        int incompleteCount = 0;
+            
+                        // Count the number of complete and incomplete tasks
+                         for(int i = 0; i < cup; i++){
+                            if (strcmp(tach[i].statut, "finalisée.") == 0){
+                            completeCount++;
+                                }
+                         else {
+                            incompleteCount++;
+                          }
+                        }
+                         printf("Nombre de tâches complètes : %d\n", completeCount);
+                         printf("Nombre de tâches incomplètes : %d\n", incompleteCount);
+                        break;
+                case 3:
+                        
+                        break;
+                default:
+                        printf("choix invalide. essayer à nouveau .\n");
+                        goto ici;
+        }
+}
 void modification(int num){
         int chx,id;
                 printf("Enter ID: ");
@@ -214,6 +254,7 @@ void modification(int num){
                 case 3:
                         printf("Nouvelle date de deadline (DD/MM/YY) : ");
                         scanf("%d/%d/%d", &tach[i].j, &tach[i].m, &tach[i].a);
+                        printf("la date a ete modifier avec succee.\n");
                         break;
                 default:
                         printf("choix invalide. essayer à nouveau .\n");
@@ -291,6 +332,7 @@ int main(){
                         Ajouter_tache(n);
                         break;
                 case 3:
+                        Afficher_tache(cup);
                         Menu_affichage();
                         Afficher_tache(cup);
                         break;
@@ -300,13 +342,14 @@ int main(){
                 case 5:
                         printf("Entrez ID pour supprimer la tache: ");
                         scanf("%d",&id);
-
+                        
                         int indice = Recherche_ID(cup,id);
                         if(indice != -1){
                                 for(int i = 0; i < cup - 1; i++){
                                         tach[i]= tach[i + 1];
                                 }
                                 cup--;
+                                
                                 printf("Tache avec l'ID: %d supprimée avec succes.\n", id);
                         }
                         else 
@@ -318,6 +361,9 @@ int main(){
                         break;
 
 
+                case 7:
+                        Menu_Statistiques();
+                        break;
                 case 8:
                         return 0;
 
@@ -328,3 +374,16 @@ int main(){
     }
 
 }
+/*int stats(int num){
+        int comp=0,incomp=0;
+                for(int i=0;i<num;i++){
+                        if(strcmp(tach[i].statut,"finalise" )== 0){
+                                comp++;
+                        }else
+                                incomp++;
+                }
+        printf("%d\n",i);
+        printf("%d\n",comp);
+        printf("%d\n",incomp);
+
+}*/
