@@ -137,7 +137,6 @@ void Ajouter_tache(int num){
                         else if(isPastDate(tach[i].j, tach[i].m, tach[i].a)){
                                 printf("La date est dans le passe. Veuillez entrer une date future.\n");}
 
-                        else(printf("\n\tLa tache Veuillez entrer avec succès\n"));
                 
                 } while(isPastDate(tach[i].j, tach[i].m, tach[i].a));
 
@@ -163,6 +162,7 @@ void Ajouter_tache(int num){
                         }
                 }
         cup += num;
+                        printf("\n\tLa tache Veuillez entrer avec succès\n");
 }
 
 void Menu_affichage(){
@@ -424,18 +424,4 @@ int main(){
                         goto ici;
         }
     }
-
 }
-/*int stats(int num){
-        int comp=0,incomp=0;
-                for(int i=0;i<num;i++){
-                        if(strcmp(tach[i].statut,"finalise" )== 0){
-                                comp++;
-                        }else
-                                incomp++;
-                }
-        printf("%d\n",i);
-        printf("%d\n",comp);
-        printf("%d\n",incomp);
-
-}*/
