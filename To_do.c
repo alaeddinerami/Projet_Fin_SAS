@@ -9,6 +9,8 @@ typedef struct{
 
 }To_do;
 int x=1;
+int deadlineL3 = 0; 
+
 To_do tach[100];
 int cup = 0; //bach ikamal min bd
  //variable delet
@@ -36,6 +38,12 @@ void Echanger_tache(int echX, int echY){
                 tach[echY] = Ech;
 }
 
+void Afficher_tache(int num){
+                for (int i=0; i < num; i++){
+                        printf("\tIdentifiant: %d\n\tTitre: %s\n\tDescription: %s\n\tDeadline: %d/%d/%d\n\tStatut: %s\n", tach[i].id,tach[i].titre, tach[i].des, tach[i].j, tach[i].m, tach[i].a, tach[i].statut);
+                }
+}
+
 void Afficher_sort_trier_alpha(int num){
         for (int i = 0; i < num - 1; i++){
                 for(int j = 0; j < num - i - 1; j++){
@@ -44,6 +52,7 @@ void Afficher_sort_trier_alpha(int num){
                         }
                 }
         }
+        Afficher_tache(num);
 }
 
 void Afficher_sort_trier_deadline(int num){
@@ -55,23 +64,41 @@ void Afficher_sort_trier_deadline(int num){
                                         Echanger_tache(j, j + 1);
                         }
                 }
+        Afficher_tache(num);
 }
 
-void Afficher_sort_trier_3jours(int num){
-                for(int i = 0;i < num -1; i++){
-                        for(int j = 0; j < num - i - 1; j++){
-                                if( isPastDate(tach[i].j, tach[i].m, tach[i].a)){
-                                        Echanger_tache(j, j+1);
-                                }
+void Afficher_sort_trier_3jours(int num) {
+    // Calculate the number of seconds in 3 days
+    int trois_jours = 3 * 24 * 60 * 60;  // 3 days in seconds
 
-                        }
-                }
+    // Current time
+    time_t current_time;
+    time(&current_time);
+
+    for (int i = 0; i < num; i++) {
+        struct tm future_date;
+        future_date.tm_year = tach[i].a - 1900;
+        future_date.tm_mon = tach[i].m - 1;
+        future_date.tm_mday = tach[i].j;
+        future_date.tm_hour = 0;
+        future_date.tm_min = 0;
+        future_date.tm_sec = 0;
+
+        // Calculate the remaining time until the deadline
+        int diff = mktime(&future_date) - current_time;
+
+        // Check if the task's deadline is within the next 3 days
+        if (diff <= trois_jours && diff >= 0) {
+            printf("\tIdentifiant: %d\n\tTitre: %s\n\tDescription: %s\n\tDeadline: %d/%d/%d\n\tStatut: %s\n",
+                   tach[i].id, tach[i].titre, tach[i].des, tach[i].j, tach[i].m, tach[i].a, tach[i].statut);
+           
+        }
+    }
 }
-void Afficher_tache(int num){
-                for (int i=0; i < num; i++){
-                        printf("\tIdentifiant: %d\n\tTitre: %s\n\tDescription: %s\n\tDeadline: %d/%d/%d\n\tStatut: %s\n", tach[i].id,tach[i].titre, tach[i].des, tach[i].j, tach[i].m, tach[i].a, tach[i].statut);
-                }
-}
+
+
+
+
 int Recherche_ID(int num, int id){
                 for(int i=0;i<num;i++){
                         if(tach[i].id == id){
@@ -112,7 +139,7 @@ void Ajouter_tache(int num){
 
                         else(printf("\n\tLa tache Veuillez entrer avec succès\n"));
                 
-                } while((tach[i].j > 30 || tach[i].j == 0 || tach[i].m > 12 || tach[i].m == 00 || tach[i].a < 2023) || isPastDate(tach[i].j, tach[i].m, tach[i].a));
+                } while(isPastDate(tach[i].j, tach[i].m, tach[i].a));
 
                 
                 ici:
@@ -164,7 +191,8 @@ void Menu_affichage(){
                         goto ici;
         }
 }
-void Menu_Statistiques(){
+
+void Menu_Statistiques(int num){
         int chx;
         char choisire[10];
         printf("\n1:Afficher le nombre total des tâches.\n");
@@ -195,9 +223,31 @@ void Menu_Statistiques(){
                          printf("Nombre de tâches complètes : %d\n", completeCount);
                          printf("Nombre de tâches incomplètes : %d\n", incompleteCount);
                         break;
-                case 3:
-                        
+                case 3:                                     
+                        time_t current_time;
+                        time(&current_time);
+
+                        for (int i = 0; i < num; i++) {
+                        struct tm future_date;
+                        future_date.tm_year = tach[i].a - 1900;
+                        future_date.tm_mon = tach[i].m - 1;
+                        future_date.tm_mday = tach[i].j;
+        
+
+                        time_t deadline_time = mktime(&future_date);
+
+                        if (deadline_time < current_time) {
+                                 printf("Tâche %d : Date dépassée\n", tach[i].id);
+                        } else {
+                                double diff_seconds = difftime(deadline_time, current_time);
+                                 int diff_days = diff_seconds / (24 * 60 * 60); // Convert seconds to days
+                                 printf("Tâche %d : %d jours restants jusqu'à la deadline\n", tach[i].id, diff_days);
+                                 }
+                        }
                         break;
+    
+
+                        
                 default:
                         printf("choix invalide. essayer à nouveau .\n");
                         goto ici;
@@ -301,7 +351,22 @@ void Menu_Rechercher(){
         }
 }
 
-
+void Supprimer(int id){
+                        printf("Entrez ID pour supprimer la tache: ");
+                        scanf("%d",&id);
+                        
+                        int indice = Recherche_ID(cup,id);
+                        if(indice != -1){
+                                for(int i = indice; i < cup - 1; i++){
+                                        tach[i]= tach[i + 1];
+                                }
+                                cup--;
+                                
+                                printf("Tache avec l'ID: %d supprimée avec succes.\n", id);
+                        }
+                        else 
+                                printf("Tache avec l'ID: %d non trouvee.\n", id);   
+}
 int main(){
     while (1)
     {
@@ -334,26 +399,13 @@ int main(){
                 case 3:
                         Afficher_tache(cup);
                         Menu_affichage();
-                        Afficher_tache(cup);
+                        
                         break;
                 case 4:
                         modification(cup);
                         break;
                 case 5:
-                        printf("Entrez ID pour supprimer la tache: ");
-                        scanf("%d",&id);
-                        
-                        int indice = Recherche_ID(cup,id);
-                        if(indice != -1){
-                                for(int i = 0; i < cup - 1; i++){
-                                        tach[i]= tach[i + 1];
-                                }
-                                cup--;
-                                
-                                printf("Tache avec l'ID: %d supprimée avec succes.\n", id);
-                        }
-                        else 
-                                printf("Tache avec l'ID: %d non trouvee.\n", id);                       
+                        Supprimer(cup);                  
                         
                         break;
                 case 6:
@@ -362,7 +414,7 @@ int main(){
 
 
                 case 7:
-                        Menu_Statistiques();
+                        Menu_Statistiques(cup);
                         break;
                 case 8:
                         return 0;
