@@ -17,11 +17,9 @@ int cup = 0; //bach ikamal min bd
 int Date_passe(int day, int month, int year) {
     time_t now;
     struct tm future_date;
-    //struct tm *current_date;
-
+    
     time(&now);
-    //current_date = localtime(&now);
-
+    
     future_date.tm_year = year - 1900;
     future_date.tm_mon = month - 1;
     future_date.tm_mday = day;
@@ -68,7 +66,7 @@ void Afficher_sort_trier_deadline(int num){
 }
 
 void Afficher_sort_trier_3jours(int num) {
-    // Calculate the number of seconds in 3 days
+    
     int trois_jours = 3 * 24 * 60 * 60;  // 3 days in seconds
 
     // Current time
@@ -80,14 +78,11 @@ void Afficher_sort_trier_3jours(int num) {
         future_date.tm_year = tach[i].a - 1900;
         future_date.tm_mon = tach[i].m - 1;
         future_date.tm_mday = tach[i].j;
-        future_date.tm_hour = 0;
-        future_date.tm_min = 0;
-        future_date.tm_sec = 0;
 
-        // Calculate the remaining time until the deadline
+        
         int diff = mktime(&future_date) - current_time;
 
-        // Check if the task's deadline is within the next 3 days
+        
         if (diff <= trois_jours && diff >= 0) {
             printf("\tIdentifiant: %d\n\tTitre: %s\n\tDescription: %s\n\tDeadline: %d/%d/%d\n\tStatut: %s\n",
                    tach[i].id, tach[i].titre, tach[i].des, tach[i].j, tach[i].m, tach[i].a, tach[i].statut);
@@ -222,33 +217,38 @@ void Menu_Statistiques(int num){
                          printf("Nombre de tâches complètes : %d\n", completeCount);
                          printf("Nombre de tâches incomplètes : %d\n", incompleteCount);
                         break;
-                case 3:                                     
+                 case 3:  
+                         // Get the current time
                         time_t current_time;
                         time(&current_time);
 
-                        for (int i = 0; i < num; i++) {
-                        struct tm future_date;
-                        future_date.tm_year = tach[i].a - 1900;
-                        future_date.tm_mon = tach[i].m - 1;
-                        future_date.tm_mday = tach[i].j;
-        
+                         if (cup > 0) {
+                           for (int i = 0; i < cup; i++) {
+                                struct tm future_date;
+                                future_date.tm_year = tach[i].a - 1900;
+                                future_date.tm_mon = tach[i].m - 1;
+                                future_date.tm_mday = tach[i].j;
 
-                        time_t deadline_time = mktime(&future_date);
+                        time_t deadline = mktime(&future_date);
 
+                        double diff_seconds = difftime(deadline, current_time);
+                        int diff_days = diff_seconds / (24 * 60 * 60); // Convert seconds to days
 
-                                double diff_seconds = difftime(deadline_time, current_time);
-                                 int diff_days = diff_seconds / (24 * 60 * 60); // Convert seconds to days
-                                 printf("Tâche %d : %d jours restants jusqu'à la deadline\n", tach[i].id, diff_days);
-                                 
+                        if (diff_days >= 0) {
+                                printf("Tâche %d : %d jours restants jusqu'à la deadline\n", tach[i].id, diff_days);
+                        } 
+                        else {
+                                printf("Tâche %d : La deadline est déjà passée.\n", tach[i].id);
                         }
-                        break;
-    
+                                 }
+                        } 
+                        else {
+                                printf("Aucune tâche n'est disponible pour afficher la deadline.\n");
+                        }
 
-                        
-                default:
-                        printf("choix invalide. essayer à nouveau .\n");
-                        goto ici;
-        }
+                        break;
+}
+                                   
 }
 
 void modification(int num){
