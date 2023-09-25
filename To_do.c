@@ -116,7 +116,7 @@ void Ajouter_tache(int num){
         int st;
         char choisire[10];
         for(int i = cup; i < cup + num; i++){
-                tach[i].id =x++;
+               tach[i].id =x++;
                 printf("\nEntez Titre: ");
                 scanf(" %[^\n]", tach[i].titre);
 
@@ -231,10 +231,13 @@ void Menu_Statistiques(int num){
                                 future_date.tm_year = tach[i].a - 1900;
                                 future_date.tm_mon = tach[i].m - 1;
                                 future_date.tm_mday = tach[i].j;
+                                future_date.tm_hour = 0;
+                                future_date.tm_min = 0;
+                                future_date.tm_sec = 0;
 
                         time_t deadline = mktime(&future_date);
 
-                        double diff_seconds = difftime(deadline, current_time);
+                        int diff_seconds = difftime(deadline, current_time);
                         int diff_days = diff_seconds / (24 * 60 * 60); // Convert seconds to days
 
                         if (diff_days >= 0) {
