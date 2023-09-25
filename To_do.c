@@ -66,7 +66,7 @@ void Afficher_sort_trier_deadline(int num){
 }
 
 void Afficher_sort_trier_3jours(int num) {
-    
+    // Calculate the number of seconds in 3 days
     int trois_jours = 3 * 24 * 60 * 60;  // 3 days in seconds
 
     // Current time
@@ -78,11 +78,14 @@ void Afficher_sort_trier_3jours(int num) {
         future_date.tm_year = tach[i].a - 1900;
         future_date.tm_mon = tach[i].m - 1;
         future_date.tm_mday = tach[i].j;
+        future_date.tm_hour = 0;
+        future_date.tm_min = 0;
+        future_date.tm_sec = 0;
 
         
         int diff = mktime(&future_date) - current_time;
 
-        
+        // Check if the task's deadline is within the next 3 days
         if (diff <= trois_jours && diff >= 0) {
             printf("\tIdentifiant: %d\n\tTitre: %s\n\tDescription: %s\n\tDeadline: %d/%d/%d\n\tStatut: %s\n",
                    tach[i].id, tach[i].titre, tach[i].des, tach[i].j, tach[i].m, tach[i].a, tach[i].statut);
